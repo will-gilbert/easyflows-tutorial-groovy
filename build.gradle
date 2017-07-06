@@ -1,0 +1,126 @@
+//=============================================================================================
+// U S A G E   ================================================================================
+//=============================================================================================
+
+task usage doLast { print """${'='*90}
+Easy Flow (https://github.com/j-easy/easy-flows)
+
+NB: Use '--quiet' or '-q' to suppress Gradle build output lines
+
+ ./gradlew usage
+    Prints the following usage to the console
+
+./gradlew Sequential -q
+   Demo of sequential workflow
+
+./gradlew RepeatTimes -q
+   Demo of workflow state which repeats
+
+./gradlew RepeatUntil -q
+  Demo of a workflow state which repeats until a condition is met
+
+./gradlew Parallel -q
+  Demo of a workflow with a split into two workflow states and then joins
+
+./gradlew Composite -q
+  Demo a nested set of workflows
+
+./gradlew SimpleApproval -q
+  Simple employee request and manger approval
+
+./gradlew TwoPartyApproval -q
+   Employee request with both manager and human resources required approvals
+
+
+ 
+ ./gradlew clean
+  Remove all reports and artifacts from './$project.buildDir.name'
+
+${'='*90}
+"""}
+
+//============================================================================================
+// P L U G I N S   ===========================================================================
+//============================================================================================
+
+
+apply plugin: 'groovy'
+
+
+//=============================================================================================
+// C O N F I G U R A T I O N  =================================================================
+//=============================================================================================
+
+sourceCompatibility = 1.8
+targetCompatibility = sourceCompatibility
+
+//=============================================================================================
+// R e p o s i t o r i e s   &   D e p e n d e n c i e s   ====================================
+//=============================================================================================
+
+repositories {
+ 	mavenLocal()
+ 	mavenCentral() 
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots'  } // Only for Snapshots
+}
+
+dependencies {
+
+    def jeasy     = '0.2-SNAPSHOT'   // Jul 2017
+    def groovy    = '2.4.12'         // Jun 2017
+
+	compile ([
+        "org.jeasy:easy-flows:$jeasy",      
+        "org.codehaus.groovy:groovy:$groovy"
+    ])
+
+}
+
+sourceSets {
+
+    compile {
+        groovy {
+            srcDirs = ['src/main/groovy']
+        }
+    }
+}
+
+
+//============================================================================================
+// R U N   T U T O R I A L S   ===============================================================
+//============================================================================================
+
+tasks.withType(JavaExec) {
+    standardInput = System.in
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task Sequential (dependsOn: 'classes', type: JavaExec) {
+    main = 'org.jeasy.groovy.tutorials.basic.Sequential'
+}
+
+task RepeatTimes (dependsOn: 'classes', type: JavaExec) {
+    main = 'org.jeasy.groovy.tutorials.basic.RepeatTimes'
+}
+
+task RepeatUntil (dependsOn: 'classes', type: JavaExec) {
+    main = 'org.jeasy.groovy.tutorials.basic.RepeatUntil'
+}
+
+task Parallel (dependsOn: 'classes', type: JavaExec) {
+    main = 'org.jeasy.groovy.tutorials.basic.Parallel'
+}
+
+task Composite (dependsOn: 'classes', type: JavaExec) {
+    main = 'org.jeasy.groovy.tutorials.basic.Composite'
+}
+
+task SimpleApproval (dependsOn: 'classes', type: JavaExec) {
+    main = 'org.jeasy.groovy.tutorials.usage.SimpleApproval'
+}
+
+task TwoPartyApproval (dependsOn: 'classes', type: JavaExec) {
+    main = 'org.jeasy.groovy.tutorials.usage.TwoPartyApproval'
+}
+
+
